@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/js/dependencies/socket.io.min.js"></script>
+  </head>
+  <body id="duvod">
+    <button id="btn1">btn1</button>
+    <button id="btn2">btn2</button>
+  </body>
+  <script>
+
+    const socket = io("http://localhost"); //NEZAPOMENOUT ZMENIT/PRIPSAT PORT, POKUD JEJ ZMENIS NA SERVERU !!!
+
+    var btn1 = document.getElementById('btn1');
+    var btn2 = document.getElementById('btn2');
+    var body = document.getElementsByTagName('body')[0];
+    
+    var lastActive = null;
+
+
+    function start(){
+      lastActive = this;
+      socket.emit('nejaka-akce', { nejaka: 'data', id: this.id } );
+    }
+
+    function end(){
+      //v podsate jde o custom eventy, ktere jsou vysilany na server a zpet
+      // je jen na tobe, jestly pro kazdy typ budes mit vlastni nazev eventu (akce), nebo jestli pouzijes vsude stejny a rozlisovat budes podle dat.
+      socket.emit('konec-akce', { nejaka: 'data', id: lastActive.id } );
+    }
+
+
+    //prirazeni eventu
+    btn1.addEventListener('mousedown', start);
+    btn1.addEventListener('touchstart', start);
+    
+    btn2.addEventListener('mousedown', start);
+    btn2.addEventListener('touchstart', start);
+
+
+    //BACHA, tyto vypisuji jen proto, ze by byly potreba, ale jsou zrádné, protože nehodí event, když ten prst posuneš nad body a zvedneš ho až tam 
+    // btn1.addEventListener('mouseup', end); 
+    // btn1.addEventListener('touchend', end);
+    // btn1.addEventListener('touchcancel', end);
+    // ... rovnez nema smysl mit aktivni oboje, protoze probublaji na body a spousteli by konecny event podruhe
+  
+    //proto je lepsi chytat tyto exit eventy na cele strance
+    body.addEventListener('mouseup', end);
+    body.addEventListener('touchend', end);
+    body.addEventListener('touchcancel', end);
+
+    
+    socket.on('connect', () => {
+      socket.emit('posilam-serveru', { nejaka: 'data' } ); 
+      
+      socket.emit('vysilam-vsem', 'Ahoj, jsme tu - novy ucastnik' );
+
+      socket.on('odpoved-serveru', (nejakaData) => { 
+        console.log(nejakaData);
+      });
+
+      socket.on('odpoved-serveru-2', () => { 
+        console.log('odpoved bez dat');
+      });
+
+      socket.on('vysilam-vsem', () => { 
+        console.log('muzeme chytat i vysilani ostatnich klientu');
+      });
+
+  
+      socket.on('disconnect', () => {
+        console.log('jsem odpojen :(')
+      });      
+      
+    });
+
+    
+  </script>
+</html>

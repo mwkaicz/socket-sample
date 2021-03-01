@@ -1,0 +1,23 @@
+{
+  "name": "socket-sample",
+  "version": "1.0.0",
+  "description": "ukazka jak pracovat se socket.io",
+  "main": "index.js",
+  "dependencies": {
+    "socket.io": "^3.1.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mwkaicz/socket-sample.git"
+  },
+  "author": "mwkaicz",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/mwkaicz/socket-sample/issues"
+  },
+  "homepage": "https://github.com/mwkaicz/socket-sample#readme"
+}
